@@ -9,6 +9,7 @@ import {
   formatSegmentIcon,
   formatSegmentLabel,
   formatTokensLabel,
+  formatTurnTokensPerSecond,
   nextCycleItem,
   resetCycleState,
   type PillItemType,
@@ -113,6 +114,21 @@ test("formatCompactTokens formats standard human-readable token quantities", () 
   assert.equal(formatCompactTokens(1000000), "1M");
   assert.equal(formatCompactTokens(1500000), "1.5M");
   assert.equal(formatCompactTokens(20000000), "20M");
+});
+
+test("formatTurnTokensPerSecond divides output tokens by turn wall time", () => {
+  assert.equal(formatTurnTokensPerSecond(2600, 41400), "63 tok/s");
+  assert.equal(formatTurnTokensPerSecond(90, 12000), "7.5 tok/s");
+  assert.equal(formatTurnTokensPerSecond(10, 1000), "10 tok/s");
+});
+
+test("formatTurnTokensPerSecond omits the rate when inputs are missing or non-positive", () => {
+  assert.equal(formatTurnTokensPerSecond(undefined, 41400), undefined);
+  assert.equal(formatTurnTokensPerSecond(2600, undefined), undefined);
+  assert.equal(formatTurnTokensPerSecond(null, null), undefined);
+  assert.equal(formatTurnTokensPerSecond(0, 41400), undefined);
+  assert.equal(formatTurnTokensPerSecond(2600, 0), undefined);
+  assert.equal(formatTurnTokensPerSecond(Number.NaN, 41400), undefined);
 });
 
 test("formatTokensLabel formats clean token and context strings", () => {

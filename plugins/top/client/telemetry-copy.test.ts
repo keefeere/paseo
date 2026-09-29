@@ -93,6 +93,21 @@ test("copy text omits optional sections that have no data", () => {
   assert.doesNotMatch(text, /Changes/);
 });
 
+test("copy text reports turn throughput from snapshot output tokens and duration", () => {
+  const text = buildTelemetryCopyText({
+    data: { ...base, outputTokens: 2600, durationMs: 41400 },
+  });
+  assert.match(text, /Throughput 63 tok\/s/);
+});
+
+test("copy text omits throughput when output tokens only come from live usage", () => {
+  const text = buildTelemetryCopyText({
+    data: { ...base, durationMs: 41400 },
+    liveUsage: { outputTokens: 9000 },
+  });
+  assert.doesNotMatch(text, /Throughput/);
+});
+
 test("copy text carries failed outcome and error detail", () => {
   const text = buildTelemetryCopyText({
     data: { ...base, outcomeKind: "failed", outcomeError: "provider timeout" },

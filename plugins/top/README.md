@@ -39,6 +39,7 @@ Built on [paseo-plugin-helper](https://github.com/xpufx/paseo/tree/main/packages
 ### 3. Turn Telemetry & Token Accounting
 - **Lifetime Turn Counter**: Tracks conversation turn counts throughout the session.
 - **Token Accounting**: Captures input tokens, cached prompt tokens, output tokens, and context window utilization percentage.
+- **Turn Throughput**: Shows output tokens per second of turn wall time (`tok/s`) beside the duration in the timeline card header. The duration includes tool calls and prefill, so this is an end-to-end pipeline rate rather than raw decode speed.
 - **Cost Estimation**: Reports cumulative estimated USD cost per turn when supported by the provider.
 - **Tool Execution Auditing**: Counts tool invocations and execution error tallies per turn.
 - **Timeline Turn Telemetry**: Automatically appends a structured telemetry card to the conversation timeline at the conclusion of each agent turn.

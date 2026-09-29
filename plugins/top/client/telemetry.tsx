@@ -22,7 +22,11 @@ import {
   type MetricId,
   type TopTimelineTelemetryData,
 } from "../shared/resources";
-import { formatCompactTokens, type TopAgentSnapshot } from "./pill-labels";
+import {
+  formatCompactTokens,
+  formatTurnTokensPerSecond,
+  type TopAgentSnapshot,
+} from "./pill-labels";
 
 export { TIMELINE_RENDERED_METRICS };
 
@@ -141,6 +145,10 @@ export function TopTimelineTelemetryCard({
       ? (inputTokens ?? 0) + (outputTokens ?? 0)
       : undefined;
 
+  // Snapshot tokens only: the live-usage fallback tracks the agent's latest
+  // turn, which would pair a later turn's output with this card's duration.
+  const tokensPerSecond = formatTurnTokensPerSecond(data.outputTokens, data.durationMs);
+
   const contextPercent = useMemo(() => {
     if (!contextMaxTokens || contextMaxTokens <= 0) return null;
     return Math.round(((contextUsedTokens ?? 0) / contextMaxTokens) * 100);
@@ -181,6 +189,9 @@ export function TopTimelineTelemetryCard({
             </Text>
             {data.durationMs != null ? (
               <Badge label={`${(data.durationMs / 1000).toFixed(1)}s`} variant="neutral" />
+            ) : null}
+            {show("tokens") && tokensPerSecond != null ? (
+              <Badge label={tokensPerSecond} variant="neutral" />
             ) : null}
           </Row>
         }

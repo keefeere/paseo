@@ -93,6 +93,23 @@ export function formatCompactTokens(n: number): string {
   return `${Math.round(n)}`;
 }
 
+/**
+ * End-to-end turn throughput: output tokens over the turn's wall time. The
+ * duration spans tool execution, prefill and any waiting, so this is a
+ * pipeline rate that reads lower than raw decode speed. Returns undefined
+ * when either input is missing or non-positive so callers omit the badge.
+ */
+export function formatTurnTokensPerSecond(
+  outputTokens: number | null | undefined,
+  durationMs: number | null | undefined,
+): string | undefined {
+  if (outputTokens == null || durationMs == null) return undefined;
+  if (!Number.isFinite(outputTokens) || !Number.isFinite(durationMs)) return undefined;
+  if (outputTokens <= 0 || durationMs <= 0) return undefined;
+  const rate = outputTokens / (durationMs / 1000);
+  return `${rate >= 10 ? Math.round(rate) : parseFloat(rate.toFixed(1))} tok/s`;
+}
+
 export function extractTokenMetrics(snap: SegmentSnapshot): TokenMetrics | null {
   const live = snap.data?.liveUsage;
   const last = snap.data?.lastTurn;
